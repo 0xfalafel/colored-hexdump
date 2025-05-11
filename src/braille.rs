@@ -1,5 +1,8 @@
+/// Take a u8, return an ascii char from the braille_charset
+pub fn braille_char(val: u8) -> char {
+	BRAILLE_CHARSET[val as usize]
+}
 
-/// Braille char used by the `ascii_char` function in `ui.rs`.
 /// This list is used when the `--braille` option is set
 /// See also <https://justine.lol/braille/>
 pub const BRAILLE_CHARSET: [char; 256] = [

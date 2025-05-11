@@ -1,5 +1,5 @@
 mod braille;
-use crate::braille::BRAILLE_CHARSET;
+use crate::braille::braille_char;
 
 const RESET: &str   = "\x1b[0m";
 const LIGHT_GREY: &str = "\x1b[38;5;242m";
@@ -11,7 +11,7 @@ const CYAN:    &str = "\x1b[36m";
 pub fn hexdump(bytes: &[u8]) -> String {
     let mut output = String::new();
     for byte in bytes {
-        output.push_str(&colorize(byte));
+        output.push_str(&colorize_byte(byte));
         output.push_str(" ");
     }
 
@@ -34,8 +34,8 @@ pub fn hexyl(bytes: &[u8]) -> String {
         for i in 0..0x10 {
             // print the colored byte in hexadecimal
             if index < bytes.len() {
-                output.push_str(&colorize(&bytes[index]));
-                ascii_line.push(mixed_braille(bytes[index]));
+                output.push_str(&colorize_byte(&bytes[index]));
+                ascii_line.push_str(&colorize_ascii(&bytes[index]));
 
             // fill with whitespace if there are no more bytes
             } else { 
@@ -66,20 +66,22 @@ pub fn hexyl(bytes: &[u8]) -> String {
     output
 }
 
-fn colorize(byte: &u8) -> String {
-    let color = match byte {
+fn color(byte: &u8) -> &str {
+    match byte {
         0x00 => LIGHT_GREY, // null bytes
         b'\t' | b'\n' | 0x0c | b'\r' | b' ' => GREEN, // ascii whitespace
         0x21..0x7f => CYAN, // printable ascii
         ..0x80 => MAGENTA,  // non-printable ascii
         _ => YELLOW,        // other
-    };
-    format!("{}{:02x}{}", color, byte, RESET)
+    }
 }
 
-/// Take a u8, return an ascii char from the braille_charset
-fn braille_char(val: u8) -> char {
-	BRAILLE_CHARSET[val as usize]
+fn colorize_byte(byte: &u8) -> String {
+    format!("{}{:02x}{}", color(byte), byte, RESET)
+}
+
+fn colorize_ascii(byte: &u8) -> String {
+    format!("{}{}{}", color(byte), mixed_braille(*byte), RESET)
 }
 
 /// Take a u8, return classic chars for value bellow 0x80, and a Braille ascii for other values
