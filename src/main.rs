@@ -1,3 +1,5 @@
+use std::u8;
+
 use colored_hexdump::{hexdump, hexyl};
 
 fn main() {
@@ -6,6 +8,7 @@ fn main() {
     for i in 0..u8::MAX {
         buf.push(i);
     }
+    buf.push(u8::MAX);
 
     let res = hexyl(&buf);
     println!("{res}");

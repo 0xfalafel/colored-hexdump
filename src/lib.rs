@@ -22,7 +22,7 @@ pub fn hexyl(bytes: &[u8]) -> String {
     
     let mut index = 0;
     
-    for line in 0..lines {
+    for line in 0..lines+1 {
         
         // address
         output.push_str(&format!("│{}{:08x}{}│ ", LIGHT_GREY, line * 0x10, RESET));
@@ -48,6 +48,10 @@ pub fn hexyl(bytes: &[u8]) -> String {
         }
         
         output.push_str("│\n");
+
+        if index >= bytes.len() {
+            break;
+        }
     }
     
     output.push_str("└────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘");
