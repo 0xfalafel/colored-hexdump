@@ -1,15 +1,26 @@
-use std::u8;
+use std::path::PathBuf;
+use std::fs;
+use clap::Parser;
+use colored_hexdump::hexyl;
 
-use colored_hexdump::{hexdump, hexyl};
+#[derive(Parser,Default,Debug)]
+//#[command(author, version, about, long_about = None)]
+//#[command(propagate_version = true)]
+struct Cli {
+    file: PathBuf,
+}
 
 fn main() {
-    let mut buf: Vec<u8> = vec![];
+    let cli = Cli::parse();
 
-    for i in 0..u8::MAX {
-        buf.push(i);
-    }
-    buf.push(u8::MAX);
+    let data = match fs::read(cli.file) {
+        Ok(data) => data,
+        Err(e) => {
+            eprintln!("Failed to read file: {}", e);
+            return;
+        }
+    };
 
-    let res = hexyl(&buf);
+    let res = hexyl(&data);
     println!("{res}");
 }
