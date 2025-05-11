@@ -1,3 +1,5 @@
+use colored::Colorize;
+
 pub fn hexdump(bytes: &[u8]) -> String {
     let mut output = String::new();
     for byte in bytes {
@@ -7,9 +9,11 @@ pub fn hexdump(bytes: &[u8]) -> String {
     output
 }
 
-#[allow(unused)]
-fn colorize(byte: u8) {
-
+fn colorize_byte(byte: u8) -> &'static str {
+    match byte {
+        0x00 => "0x00",
+        _ => todo!()
+    }
 }
 
 #[cfg(test)]
