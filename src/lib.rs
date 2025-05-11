@@ -1,3 +1,6 @@
+mod braille;
+use crate::braille::BRAILLE_CHARSET;
+
 const RESET: &str   = "\x1b[0m";
 const LIGHT_GREY: &str = "\x1b[38;5;242m";
 const GREEN:   &str = "\x1b[32m";
@@ -23,6 +26,7 @@ pub fn hexyl(bytes: &[u8]) -> String {
     let mut index = 0;
     
     for line in 0..lines+1 {
+        let mut ascii_line = String::from("│");
         
         // address
         output.push_str(&format!("│{}{:08x}{}│ ", LIGHT_GREY, line * 0x10, RESET));
@@ -31,10 +35,12 @@ pub fn hexyl(bytes: &[u8]) -> String {
             // print the colored byte in hexadecimal
             if index < bytes.len() {
                 output.push_str(&colorize(&bytes[index]));
-                
+                ascii_line.push(mixed_braille(bytes[index]));
+
             // fill with whitespace if there are no more bytes
             } else { 
                 output.push_str("  ");
+                ascii_line.push(' ');
             }
             
             output.push(' ');
@@ -42,11 +48,13 @@ pub fn hexyl(bytes: &[u8]) -> String {
             
             // middle line separator
             if i == 7 {
-                output.push_str("│ ");        
+                output.push_str("│ ");
+                ascii_line.push('│');
             }
             
         }
         
+        output.push_str(&ascii_line);
         output.push_str("│\n");
 
         if index >= bytes.len() {
@@ -67,6 +75,24 @@ fn colorize(byte: &u8) -> String {
         _ => YELLOW,        // other
     };
     format!("{}{:02x}{}", color, byte, RESET)
+}
+
+/// Take a u8, return an ascii char from the braille_charset
+fn braille_char(val: u8) -> char {
+	BRAILLE_CHARSET[val as usize]
+}
+
+/// Take a u8, return classic chars for value bellow 0x80, and a Braille ascii for other values
+/// It's a pretty Ok compromise in readability
+fn mixed_braille(val: u8) -> char {
+	match val {
+		val if val == 0x00 => {'0'},
+		val if val == 0x20 => {' '},
+		val if val.is_ascii_whitespace() => {'_'},
+		val if val > 0x20 && val < 0x7f => {val as char},
+		val if val.is_ascii() => {'•'},
+		val => {braille_char(val)} // 0x80 and above
+	}
 }
 
 #[cfg(test)]
