@@ -19,48 +19,38 @@ pub fn hexyl(bytes: &[u8]) -> String {
     let lines = bytes.len() / 16;
 
     let mut output = String::from("┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐\n");
-
+    
     let mut index = 0;
-
+    
     for line in 0..lines {
-
+        
+        // address
         output.push_str(&format!("│{}{:08x}{}│ ", LIGHT_GREY, line * 0x10, RESET));
-
-        for _ in 0..8 {
-            output.push_str(&colorize(&bytes[index]));
+        
+        for i in 0..0x10 {
+            // print the colored byte in hexadecimal
+            if index < bytes.len() {
+                output.push_str(&colorize(&bytes[index]));
+                
+            // fill with whitespace if there are no more bytes
+            } else { 
+                output.push_str("  ");
+            }
+            
             output.push(' ');
             index += 1;
-
-            if index > bytes.len() {
-                return output
+            
+            // middle line separator
+            if i == 7 {
+                output.push_str("│ ");        
             }
+            
         }
-
-        output.push_str("│ ");
-
-        for _ in 0..8 {
-            output.push_str(&colorize(&bytes[index]));
-            output.push(' ');
-            index += 1;
-
-            if index > bytes.len() {
-                return output
-            }
-        }
-
+        
         output.push_str("│\n");
     }
-
-    // for (index, byte) in bytes.iter().enumerate() {
-        
-    //     match index % 16 {
-    //         7 => output.push_str("│ "),
-    //         16 => output.push_str("│\n│ "),
-    //         _ => {},
-    //     }
-    //     output.push_str(&colorize(byte));
-    //     output.push(' ');
-    // }
+    
+    output.push_str("└────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘");
     output
 }
 
