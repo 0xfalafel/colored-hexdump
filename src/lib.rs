@@ -1,5 +1,3 @@
-use colored::Colorize;
-
 const RESET: &str   = "\x1b[0m";
 const LIGHT_GREY: &str = "\x1b[242m";
 const GREEN:   &str = "\x1b[32m";
