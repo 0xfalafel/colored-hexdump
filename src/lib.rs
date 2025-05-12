@@ -66,6 +66,48 @@ pub fn hexyl(bytes: &[u8]) -> String {
     output
 }
 
+pub fn xxd(bytes: &[u8]) -> String {
+    let lines = bytes.len() / 16;
+
+    let mut output = String::new();
+    let mut index = 0;
+    
+    for line in 0..lines+1 {
+        let mut ascii_line = String::new();
+        
+        // address
+        output.push_str(&format!("{}{:08x}: {}", LIGHT_GREY, line * 0x10, RESET));
+        
+        for i in 0..0x10 {
+            // print the colored byte in hexadecimal
+            if index < bytes.len() {
+                output.push_str(&colorize_byte(&bytes[index]));
+                ascii_line.push_str(&colorize_ascii(&bytes[index]));
+
+            // fill with whitespace if there are no more bytes
+            } else { 
+                output.push_str("  ");
+                ascii_line.push(' ');
+            }
+            
+            if i % 2 == 1 {
+                output.push(' ');
+            }
+
+            index += 1;
+        }
+        
+        output.push_str(&ascii_line);
+        output.push_str("\n");
+
+        if index >= bytes.len() {
+            break;
+        }
+    }
+    output
+}
+
+
 fn color(byte: &u8) -> &str {
     match byte {
         0x00 => LIGHT_GREY, // null bytes

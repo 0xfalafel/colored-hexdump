@@ -1,12 +1,16 @@
 use std::path::PathBuf;
 use std::fs;
 use clap::Parser;
-use colored_hexdump::hexyl;
+use colored_hexdump::{hexyl, xxd};
 
 #[derive(Parser,Default,Debug)]
 //#[command(author, version, about, long_about = None)]
 //#[command(propagate_version = true)]
 struct Cli {
+    /// use a classic xxd style
+    #[arg(short)]
+    x: bool,
+
     file: PathBuf,
 }
 
@@ -21,6 +25,10 @@ fn main() {
         }
     };
 
-    let res = hexyl(&data);
-    println!("{res}");
+    let hexdump = match cli.x {
+        false => hexyl(&data),
+        true  => xxd(&data),
+    };
+
+    println!("{hexdump}")
 }
