@@ -1,4 +1,4 @@
 
-pub fn binary_template(data: &[u8], template: String) {
+pub fn binary_template(_data: &[u8], template: String) {
     println!("{}", template);
 }
