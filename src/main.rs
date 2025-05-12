@@ -3,8 +3,8 @@ use std::fs;
 use clap::Parser;
 use colored_hexdump::{hexyl, xxd};
 
-mod binary_tempalte;
-use binary_tempalte::binary_template;
+mod binary_template;
+use binary_template::binary_template;
 
 #[derive(Parser,Default,Debug)]
 //#[command(author, version, about, long_about = None)]
@@ -33,7 +33,16 @@ fn main() {
     };
 
     if let Some(binary_template_path) = cli.binary_template {
-        binary_template();
+        let template = match fs::read_to_string(binary_template_path) {
+            Ok(template_content) => template_content,
+            Err(e) => {
+                eprintln!("Failed to read binary_template: {}", e);
+                return;
+            }
+        };
+        
+        binary_template(&data, template);
+        return;
     }
 
     let hexdump = match cli.x {
