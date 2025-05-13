@@ -29,7 +29,7 @@ fn main() {
 
 ## xxd
 
-You can also go with a more classic `xxd` style with `colored_hexdump::xx()`.
+You can also go with a more classic `xxd` style with `colored_hexdump::xxd()`.
 
 ![`colored_hexdump::xxd()`](./images/xxr.png)
 
