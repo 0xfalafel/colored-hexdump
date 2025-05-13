@@ -8,22 +8,22 @@ const YELLOW:  &str = "\x1b[33m";
 const MAGENTA: &str = "\x1b[35m";
 const CYAN:    &str = "\x1b[36m";
 
+/// Produce a colored hexdump with borders
+pub fn hexdump(bytes: &[u8]) -> String {
+    hexyl(bytes, BrailleMode::Mixed)
+}
+
+/// Produce a colored hexdump in the style of xxd
+pub fn xxd(bytes: &[u8]) -> String {
+    xxd_braille(bytes, BrailleMode::Mixed)
+}
+
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BrailleMode {
 //    None,
     Mixed,
     All,
-}
-
-#[allow(unused)]
-fn dump(bytes: &[u8]) -> String {
-    let mut output = String::new();
-    for byte in bytes {
-        output.push_str(&colorize_byte(byte));
-        output.push_str(" ");
-    }
-
-    output
 }
 
 pub fn hexyl(bytes: &[u8], braille: BrailleMode) -> String {
@@ -74,7 +74,7 @@ pub fn hexyl(bytes: &[u8], braille: BrailleMode) -> String {
     output
 }
 
-pub fn xxd(bytes: &[u8], braille: BrailleMode) -> String {
+pub fn xxd_braille(bytes: &[u8], braille: BrailleMode) -> String {
     let lines = bytes.len() / 16;
 
     let mut output = String::new();
@@ -154,9 +154,6 @@ fn mixed_braille(val: u8) -> char {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-
-
 
     #[test]
     fn zero() {
