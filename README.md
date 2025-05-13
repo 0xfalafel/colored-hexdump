@@ -22,18 +22,14 @@ fn main() {
     let all_bytes: Vec<u8> = (0..=u8::MAX).collect();
 
     // Create hexdump, and print it to stdout
-    let hex_colors = hexdump(&all_bytes);
-    println!("{}", hex_colors);
+    let hexdump = hexdump(&all_bytes);
+    println!("{}", hexdump);
 }
 ```
 
 ## xxd
 
-You can also go with a more classic `xxd` style with
-
-```Rust
-colored_hexdump::xxr()
-```
+You can also go with a more classic `xxd` style with `colored_hexdump::xx()`.
 
 ![`colored_hexdump::xxd()`](./images/xxr.png)
 
@@ -45,7 +41,7 @@ fn main() {
     let all_bytes: Vec<u8> = (0..=u8::MAX).collect();
 
     // Create hexdump, and print it to stdout
-    let hex_colors = xxd(&all_bytes);
-    println!("{}", hex_colors);
+    let hexdump = xxd(&all_bytes);
+    println!("{}", hexdump);
 }
 ```
