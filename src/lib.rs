@@ -21,7 +21,7 @@ pub fn xxd(bytes: &[u8]) -> String {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BrailleMode {
-//    None,
+    None,
     Mixed,
     All,
 }
@@ -29,7 +29,9 @@ pub enum BrailleMode {
 pub fn hexyl(bytes: &[u8], braille: BrailleMode) -> String {
     let lines = bytes.len() / 16;
 
-    let mut output = String::from("┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐\n");
+    let mut output = String::from(
+        "┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐\n"
+    );
     
     let mut index = 0;
     
@@ -70,7 +72,9 @@ pub fn hexyl(bytes: &[u8], braille: BrailleMode) -> String {
         }
     }
     
-    output.push_str("└────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘");
+    output.push_str(
+        "└────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘"
+    );
     output
 }
 
@@ -134,6 +138,7 @@ fn colorize_ascii(byte: &u8, braille: BrailleMode) -> String {
     let ascii_char = match braille {
         BrailleMode::All => braille_char(*byte),
         BrailleMode::Mixed => mixed_braille(*byte),
+        BrailleMode::None => no_braille(*byte),
     };
     format!("{}{}{}", color(byte), ascii_char, RESET)
 }
@@ -142,12 +147,23 @@ fn colorize_ascii(byte: &u8, braille: BrailleMode) -> String {
 /// It's a pretty Ok compromise in readability
 fn mixed_braille(val: u8) -> char {
 	match val {
-		val if val == 0x00 => {'0'},
-		val if val == 0x20 => {' '},
-		val if val.is_ascii_whitespace() => {'_'},
-		val if val > 0x20 && val < 0x7f => {val as char},
-		val if val.is_ascii() => {'•'},
-		val => {braille_char(val)} // 0x80 and above
+		val if val == 0x00 => '0',
+		val if val == 0x20 => ' ',
+		val if val.is_ascii_whitespace() => '_',
+		val if val > 0x20 && val < 0x7f => val as char,
+		val if val.is_ascii() => '•',
+		val => braille_char(val) // 0x80 and above
+	}
+}
+
+fn no_braille(val: u8) -> char {
+	match val {
+		val if val == 0x00 => '0',
+		val if val == 0x20 => ' ',
+		val if val.is_ascii_whitespace() => '_',
+		val if val > 0x20 && val < 0x7f => val as char,
+		val if val.is_ascii() => '•',
+		_ => 'x' // 0x80 and above
 	}
 }
 
