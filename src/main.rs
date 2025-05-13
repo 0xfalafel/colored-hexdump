@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::fs;
 use clap::Parser;
-use colored_hexdump::{hexyl, xxd, xxd_braille, BrailleMode};
+use colored_hexdump::{hexyl, xxd_braille, BrailleMode};
 
 #[derive(Parser,Default,Debug)]
 //#[command(author, version, about, long_about = None)]
