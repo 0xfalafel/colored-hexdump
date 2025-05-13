@@ -3,6 +3,7 @@ name = "colored-hexdump"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
+description = "Make colored hexdumps"
 
 [lib]
 name = "colored_hexdump"
