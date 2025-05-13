@@ -8,7 +8,15 @@ const YELLOW:  &str = "\x1b[33m";
 const MAGENTA: &str = "\x1b[35m";
 const CYAN:    &str = "\x1b[36m";
 
-pub fn hexdump(bytes: &[u8]) -> String {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BrailleMode {
+//    None,
+    Mixed,
+    All,
+}
+
+#[allow(unused)]
+fn dump(bytes: &[u8]) -> String {
     let mut output = String::new();
     for byte in bytes {
         output.push_str(&colorize_byte(byte));
@@ -18,7 +26,7 @@ pub fn hexdump(bytes: &[u8]) -> String {
     output
 }
 
-pub fn hexyl(bytes: &[u8]) -> String {
+pub fn hexyl(bytes: &[u8], braille: BrailleMode) -> String {
     let lines = bytes.len() / 16;
 
     let mut output = String::from("┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐\n");
@@ -35,7 +43,7 @@ pub fn hexyl(bytes: &[u8]) -> String {
             // print the colored byte in hexadecimal
             if index < bytes.len() {
                 output.push_str(&colorize_byte(&bytes[index]));
-                ascii_line.push_str(&colorize_ascii(&bytes[index]));
+                ascii_line.push_str(&colorize_ascii(&bytes[index], braille));
 
             // fill with whitespace if there are no more bytes
             } else { 
@@ -66,7 +74,7 @@ pub fn hexyl(bytes: &[u8]) -> String {
     output
 }
 
-pub fn xxd(bytes: &[u8]) -> String {
+pub fn xxd(bytes: &[u8], braille: BrailleMode) -> String {
     let lines = bytes.len() / 16;
 
     let mut output = String::new();
@@ -82,7 +90,7 @@ pub fn xxd(bytes: &[u8]) -> String {
             // print the colored byte in hexadecimal
             if index < bytes.len() {
                 output.push_str(&colorize_byte(&bytes[index]));
-                ascii_line.push_str(&colorize_ascii(&bytes[index]));
+                ascii_line.push_str(&colorize_ascii(&bytes[index], braille));
 
             // fill with whitespace if there are no more bytes
             } else { 
@@ -122,8 +130,12 @@ fn colorize_byte(byte: &u8) -> String {
     format!("{}{:02x}{}", color(byte), byte, RESET)
 }
 
-fn colorize_ascii(byte: &u8) -> String {
-    format!("{}{}{}", color(byte), mixed_braille(*byte), RESET)
+fn colorize_ascii(byte: &u8, braille: BrailleMode) -> String {
+    let ascii_char = match braille {
+        BrailleMode::All => braille_char(*byte),
+        BrailleMode::Mixed => mixed_braille(*byte),
+    };
+    format!("{}{}{}", color(byte), ascii_char, RESET)
 }
 
 /// Take a u8, return classic chars for value bellow 0x80, and a Braille ascii for other values
@@ -143,9 +155,12 @@ fn mixed_braille(val: u8) -> char {
 mod tests {
     use super::*;
 
+
+
+
     #[test]
     fn zero() {
-        let result = hexdump(&[0x00]);
+        let result = dump(&[0x00]);
         println!("{}", result);
         assert_eq!(result, "00");
     }

@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use std::fs;
 use clap::Parser;
-use colored_hexdump::{hexyl, xxd};
+use colored_hexdump::{BrailleMode, hexyl, xxd};
 
 #[derive(Parser,Default,Debug)]
 //#[command(author, version, about, long_about = None)]
@@ -10,6 +10,9 @@ struct Cli {
     /// use a classic xxd style
     #[arg(short)]
     x: bool,
+
+    #[arg(short='b', long)]
+    braille: bool,
 
     file: PathBuf,
 }
@@ -25,9 +28,14 @@ fn main() {
         }
     };
 
+    let braille = match cli.braille {
+        true  => BrailleMode::All,
+        false => BrailleMode::Mixed,
+    };
+
     let hexdump = match cli.x {
-        false => hexyl(&data),
-        true  => xxd(&data),
+        false => hexyl(&data, braille),
+        true  => xxd(&data, braille),
     };
 
     println!("{hexdump}")
