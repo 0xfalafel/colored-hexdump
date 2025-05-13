@@ -1,6 +1,6 @@
 [package]
 name = "colored-hexdump"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 license = "MIT"
 description = "Create beautifuly colored hexdumps"
@@ -11,4 +11,4 @@ name = "colored_hexdump"
 path = "src/lib.rs"
 
 [dependencies]
-clap = { version = "4.5.38", features = ["derive"] }
+
