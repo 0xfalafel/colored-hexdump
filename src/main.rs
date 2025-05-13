@@ -11,6 +11,7 @@ struct Cli {
     #[arg(short)]
     x: bool,
 
+    /// Use full braille for the ascii panel.
     #[arg(short='b', long)]
     braille: bool,
 
