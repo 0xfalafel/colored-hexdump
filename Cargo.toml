@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT"
 description = "Make colored hexdumps"
+repository = "https://github.com/0xfalafel/colored-hexdump"
 
 [lib]
 name = "colored_hexdump"
