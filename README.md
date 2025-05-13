@@ -15,7 +15,7 @@ cargo add colored-hexdump
 Use `colored_hexdump::hexdump()` to create an hexdump with borders.
 
 ```Rust
-use colored_hexdump::hexdump;;
+use colored_hexdump::hexdump;
 
 fn main() {
     // All possible bytes
@@ -38,7 +38,7 @@ colored_hexdump::xxr()
 ![`colored_hexdump::xxd()`](./images/xxr.png)
 
 ```Rust
-use colored_hexdump::xxd;;
+use colored_hexdump::xxd;
 
 fn main() {
     // All possible bytes
